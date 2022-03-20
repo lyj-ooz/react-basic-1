@@ -53,15 +53,42 @@ function Article(props) {
     );
 }
 
+function Create(props) {
+    return (
+        <article>
+            <h2>Create~</h2>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    const title = e.target.title.value;
+                    const body = e.target.body.value;
+                    props.onCreate(title, body);
+                }}
+            >
+                <p>
+                    <input type="text" name="title" placeholder="Enter title" />
+                </p>
+                <p>
+                    <textarea name="body" placeholder="Enter text.."></textarea>
+                </p>
+                <p>
+                    <input type="submit" value="Create" />
+                </p>
+            </form>
+        </article>
+    );
+}
+
 function App() {
     const [mode, setMode] = useState("WELCOME");
     const [id, setId] = useState(null);
+    const [nextId, setNextId] = useState(4);
     let content = null;
-    const topics = [
+    const [topics, setTopics] = useState([
         { id: 1, title: "Html", body: "html is..." },
         { id: 2, title: "Css", body: "css is..." },
         { id: 3, title: "JavaScript", body: "js is..." },
-    ];
+    ]);
 
     if (mode === "WELCOME") {
         content = <Article title="Welcome~!~" body="Hello~, WEB"></Article>;
@@ -72,6 +99,24 @@ function App() {
                 title={chosenTopic.title}
                 body={chosenTopic.body}
             ></Article>
+        );
+    } else if (mode === "CREATE") {
+        content = (
+            <Create
+                onCreate={(newTitle, newBody) => {
+                    const newTopic = {
+                        id: nextId,
+                        title: newTitle,
+                        body: newBody,
+                    };
+                    let copiedTopics = [...topics];
+                    copiedTopics.push(newTopic);
+                    setTopics(copiedTopics);
+                    setMode("READ");
+                    setId(nextId);
+                    setNextId(nextId + 1);
+                }}
+            ></Create>
         );
     }
 
@@ -91,6 +136,15 @@ function App() {
                 }}
             ></Nav>
             {content}
+            <a
+                href="/create"
+                onClick={(e) => {
+                    e.preventDefault();
+                    setMode("CREATE");
+                }}
+            >
+                Create
+            </a>
         </div>
     );
 }
