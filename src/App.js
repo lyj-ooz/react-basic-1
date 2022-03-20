@@ -95,8 +95,4 @@ function App() {
     );
 }
 
-// function sayMessage(msg) {
-//     alert(msg)
-// }
-
 export default App;
